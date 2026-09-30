@@ -29,7 +29,7 @@ def render_markdown(text):
 
     allowed_tags = [
         "p", "b", "i", "strong", "em", "a", "code", "pre", "blockquote",
-        "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "br", "u"
+        "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "br", "u",
         "table", "thead", "tbody", "tr", "th", "td", "del", "ins", "sub", "sup"
     ]
     allowed_attrs = {
