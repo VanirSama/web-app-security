@@ -9,3 +9,5 @@ instance/
 
 *.db
 *.env
+*.dev.*
+.pre-commit-config.yaml

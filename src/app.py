@@ -1,5 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from pathlib import Path
+from dataclasses import dataclass, asdict
+from tomllib import load
 import markdown, bleach
 
 from src.config import Config
@@ -173,6 +176,24 @@ def not_found(e): return render_template("error.html", code=404, message="Page N
 def server_error(e): return render_template("error.html", code=500, message="Internal Server Error"), 500
 
 
+@dataclass
+class DevConfig:
+    debug: bool     = False
+    host: str       = "127.0.0.1"
+    port: int       = 5000
+
+    def load(self) -> dict[str, type]:
+        config_file = Path(__file__).parent / "app.dev.toml"
+        try:
+            cfg = load(config_file.open("rb"))
+            self.debug  = cfg.get("DEBUG", False)
+            self.host   = cfg.get("HOST", "127.0.0.1")
+            self.port   = cfg.get("PORT", 5000)
+        except FileNotFoundError: ...
+
+        return asdict(self)
+
+
 if __name__ == '__main__':
     with app.app_context(): db.create_all()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(**DevConfig().load())
