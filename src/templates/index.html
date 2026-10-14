@@ -36,9 +36,7 @@
             </div>
             <div class="note-actions">
                 <a href="{{ url_for('edit_note', note_id=note.id) }}" class="btn btn-secondary">Редактировать</a>
-                <form method="POST" action="{{ url_for('delete_note', note_id=note.id) }}"
-                      style="display:inline;"
-                      onsubmit="return confirm('Удалить эту заметку?');">
+                <form method="POST" action="{{ url_for('delete_note', note_id=note.id) }}" class="inline-form" onsubmit="return confirm('Удалить эту заметку?');">
                     {{ delete_form.hidden_tag() }}
                     {{ delete_form.submit(class_="btn btn-danger") }}
                 </form>

@@ -218,6 +218,9 @@ textarea.form-control { min-height: 150px; resize: vertical; font-family: 'Conso
 .error-page h1 { font-size: 3rem; color: var(--malachite-light); margin-bottom: 0.5rem; }
 .error-page p { color: var(--text-secondary); margin-bottom: 2rem; }
 
+.edit-card { max-width: 700px; margin: 0 auto; }
+.inline-form { display:inline; }
+
 @media (max-width: 640px) {
     .navbar { padding: 0.8rem 1rem; }
     .container { padding: 1rem; }

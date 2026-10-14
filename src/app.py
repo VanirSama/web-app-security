@@ -1,17 +1,39 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from pathlib import Path
-from dataclasses import dataclass, asdict
-from tomllib import load
+from flask_talisman import Talisman
 import markdown, bleach
 
-from src.config import Config
+from src.config import Config, DevConfig
 from src.models import db, UserModel, NoteModel
 from src.forms import RegistrationForm, LoginForm, NoteForm, DeleteNoteForm
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+
+csp = {
+    "default-src": ["'self'"],
+    "script-src":  ["'self'"],
+    "style-src":   ["'self'"],
+    "img-src":     ["'self'", "data:"],
+    "font-src":    ["'self'"],
+    "connect-src": ["'self'"],
+    "frame-ancestors": ["'none'"],
+    "base-uri":    ["'self'"],
+    "form-action": ["'self'"],
+}
+
+Talisman(
+    app,
+    force_https=Config.FORCE_HTTPS,
+    session_cookie_secure=Config.FORCE_HTTPS,
+    strict_transport_security=True,
+    strict_transport_security_max_age=31536000,
+    content_security_policy=csp,
+    frame_options="DENY",
+    x_content_type_options=True,
+    referrer_policy="strict-origin-when-cross-origin",
+)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -176,24 +198,7 @@ def not_found(e): return render_template("error.html", code=404, message="Page N
 def server_error(e): return render_template("error.html", code=500, message="Internal Server Error"), 500
 
 
-@dataclass
-class DevConfig:
-    debug: bool     = False
-    host: str       = "127.0.0.1"
-    port: int       = 5000
-
-    def load(self) -> dict[str, type]:
-        config_file = Path(__file__).parent / "app.dev.toml"
-        try:
-            cfg = load(config_file.open("rb"))
-            self.debug  = cfg.get("DEBUG", False)
-            self.host   = cfg.get("HOST", "127.0.0.1")
-            self.port   = cfg.get("PORT", 5000)
-        except FileNotFoundError: ...
-
-        return asdict(self)
-
-
 if __name__ == '__main__':
     with app.app_context(): db.create_all()
-    app.run(**DevConfig().load())
+    dev_cfg = DevConfig()
+    app.run(host=dev_cfg.host, port=dev_cfg.port, debug=dev_cfg.debug)

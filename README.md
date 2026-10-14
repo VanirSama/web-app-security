@@ -14,29 +14,29 @@
 > [!NOTE]
 > Для установки и запуска проекта необходимы Git и Python 3.8+
 
-```comandline
+```bash
 git clone https://github.com/VanirSama/web-app-security.git
 cd web-app-security
 python -m venv .venv
 ```
 Для Windows:
-```comandline
+```bash
 .venv\Scripts\activate
 ```
 Для Linux:
-```commandline
+```bash
 source .venv\bin\activate
 ```
 
-```commandline
+```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 В папке `src\` создайте `notes.db`, измените конфигурацию в `.env.example` и переименуйте в `.env`
 
-```commandline
-python -m src.app
+```bash
+python run.py
 ```
 
 В любом удобном браузере перейдите по `https://localhost:5000` или `https://127.0.0.1:5000`
